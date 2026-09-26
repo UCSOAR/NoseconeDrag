@@ -25,7 +25,7 @@ function [totalCd, pressureCd, frictionCd, speedOfSound] = vonKarmanDragCoeffici
 %       pressure drag is zero below Mach 0.9 and held constant above Mach 3.
 %       friction drag: fully turbulent flat-plate skin friction with compressibility
 %       and roughness limits, times the wetted-to-base area ratio and the body
-%       correction 1 + 1/(2*L/R).
+%       correction 1 + 1/(2*L/D).
 %       base drag is excluded because the nose is assumed to sit on a body tube.
 %
 %   sources
@@ -63,9 +63,8 @@ function [totalCd, pressureCd, frictionCd, speedOfSound] = vonKarmanDragCoeffici
 
     pressureCd = nosePressureDrag(mach, finenessRatio);
 
-    % openrocket evaluates its body correction with length over radius
-    lengthToRadius = 2*finenessRatio;
-    bodyCorrection = 1 + 1./(2*lengthToRadius);
+    % body correction evaluated with the fineness ratio L/D
+    bodyCorrection = 1 + 1./(2*finenessRatio);
     skinFriction = turbulentSkinFriction(mach, reynolds, noseLength, options.SurfaceRoughness);
     frictionCd = skinFriction.*(wettedAreaRatio(finenessRatio).*bodyCorrection);
 
